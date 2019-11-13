@@ -4,12 +4,13 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var express = require('express');
+var app = express();
 var debug = require('debug')('quueit:server');
 var http = require('http');
+var bodyParser = require('body-parser')
 
 var db = require("./db.js");
-var router = require('./routes.js');
 
 /**
  * Get port from environment and store in Express.
@@ -17,6 +18,12 @@ var router = require('./routes.js');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+ 
+// parse application/json
+app.use(bodyParser.json())
 
 /**
  * Create HTTP server.
@@ -44,7 +51,7 @@ db.connect(function (err, mongo) {
             next();
         });
         // Load the routes    
-
+        var router = require('./routes.js');
         app.use('/api/v1', router);
 
         server = http.createServer(app);

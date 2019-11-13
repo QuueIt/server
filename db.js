@@ -2,7 +2,7 @@ var
     fs = require('fs'),
     mongoose = require('mongoose'),
     models_path = __dirname + '/models',
-    mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/imprint";
+    mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/quueit";
 
 /**
  * db.js
