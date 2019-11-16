@@ -10,5 +10,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/user/welcome/otp/:phone/:geocode', Welcome.greet);
+router.get('/user/welcome/login/:phone/:otp', Welcome.login);
+
+console.log("API Routes are Initialized!");
 
 module.exports = router;

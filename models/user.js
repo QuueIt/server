@@ -8,18 +8,19 @@ var userSchema = new Schema({
         index: true
     },
     name: {
-        type: String,
-        required: true,
+        type: String,        
         index: true
     },
     photo: {
-        type: String,
-        required: true
+        type: String        
     },
     active: {
         type: Boolean,
         required: true,
         default: true
+    },
+    country: {
+        type: String
     },
     countryCode: {
         type: String,
@@ -37,10 +38,35 @@ var userSchema = new Schema({
     },
     modified: {
         type: Date
+    },
+    otp: {
+        type: String
     }
 }, {
     collection: 'User'
 });
+
+userSchema.statics.create = function (obj, callback) {
+    new this(obj).save(callback);
+};
+
+userSchema.statics.lookUpUser = function (phone, code, callback) {
+    this.findOne({
+        'phone': phone,
+        'countryCode': code
+    }, callback);
+};
+
+userSchema.statics.validateOTP = function (phone, code, callback) {
+    this.findOne({
+        'phone': phone,
+        'otp': code
+    }, callback);
+};
+
+userSchema.statics.updateByPhone = function(phone, obj, callback) {
+    this.update({phone: phone}, obj, callback);
+}
 
 userSchema.methods.toJSON = function () {
     return {

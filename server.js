@@ -8,8 +8,9 @@ var express = require('express');
 var app = express();
 var debug = require('debug')('quueit:server');
 var http = require('http');
+var morgan = require('morgan');
 var bodyParser = require('body-parser')
-
+var redisServer = require('./redis');
 var db = require("./db.js");
 
 /**
@@ -24,6 +25,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
  
 // parse application/json
 app.use(bodyParser.json())
+
+global.REQUEST = require('./helpers/codes.json');
+
+var addRequestId = require('express-request-id')();
+app.use(addRequestId)
+
+morgan.token('id', (req) => req.id.split('-')[0])
+
+app.use(morgan("[:date[iso] #:id] Started :method :url for :remote-addr"))
+
+app.use(morgan("[:date[iso] #:id] Completed :status :res[content-length] in :response-time ms"))
 
 /**
  * Create HTTP server.
@@ -46,18 +58,26 @@ db.connect(function (err, mongo) {
             process.exit(-1);
         }
 
-        app.use(function (req, res, next) {
-            req.db = mongo;
-            next();
-        });
-        // Load the routes    
-        var router = require('./routes.js');
-        app.use('/api/v1', router);
+        redisServer.init(function(redisCon) {            
+        
+            app.use(function (req, res, next) {
+                console.log("Incoming Request Params", req.params);
+                console.log("Incoming Request Body", req.body);
+                req.db = mongo;
+                req.redis = redisCon;
+                next();
+            });
 
-        server = http.createServer(app);
-        server.listen(port);
-        server.on('error', onError);
-        server.on('listening', onListening);
+            // Load the routes    
+            var router = require('./routes.js');
+            app.use('/api/v1', router);
+
+            server = http.createServer(app);
+            server.listen(port);
+            server.on('error', onError);
+            server.on('listening', onListening);
+
+        });        
     });
 });
 
@@ -115,7 +135,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening() {    
     var addr = server.address();
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr

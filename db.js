@@ -11,7 +11,8 @@ var
 
 exports.connect = function (callback) {
     mongoose.connect(mongoURI, {
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     }).then(function (db) {
         console.log("MongoDB:Connected.", mongoURI);
         callback(null, db)
