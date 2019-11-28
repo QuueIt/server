@@ -18,24 +18,29 @@ exports.greet = function(req, res, next) {
     User.lookUpUser(phone, geocode, function(err, user){
         if (err) {
             console.error(err);
+        } else if (user) {                                  
+                let update = {                    
+                    modified: Common.getUTCNow(),
+                    active: false,
+                    otp: Common.generateOTP()                
+                }
+                User.updateByPhone(phone, update, function(err) {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        return res.status(REQUEST.HTTP.ECODE.OK).send();
+                    }
+                });     
         } else {
-            let user = {};            
-            if (user) {
-                user = {                    
-                    modified: Common.getUTCNow(),
-                    active: false,
-                    otp: Common.generateOTP()                
-                }   
-            } else {
-                user = {
-                    phone: phone, 
-                    countryCode: geocode,
-                    created: Common.getUTCNow(),
-                    modified: Common.getUTCNow(),
-                    active: false,
-                    otp: Common.generateOTP()                
-                }      
-            }
+            let user = {
+                phone: phone, 
+                countryCode: geocode,
+                created: Common.getUTCNow(),
+                modified: Common.getUTCNow(),
+                active: false,
+                otp: Common.generateOTP()                
+            }      
+
             User.create(user, function(err, userData){
                 if (err) {
                     console.error(err);
@@ -47,8 +52,8 @@ exports.greet = function(req, res, next) {
                     // write code to send OTP to user
                     return next();
                 }
-            });                              
-        }         
+            });      
+        }           
     });    
 }
 
