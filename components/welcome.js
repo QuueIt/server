@@ -76,6 +76,7 @@ exports.login = function(req, res, next) {
             let update = {
                 status: true,
                 active: true, 
+				_id: user._id,
                 apiToken: Common.secureRandomToken(),
                 modified: Common.getUTCNow()
             }
