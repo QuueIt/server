@@ -18,14 +18,23 @@ exports.greet = function(req, res, next) {
     User.lookUpUser(phone, geocode, function(err, user){
         if (err) {
             console.error(err);
-        } else if (!user) {
-            let user = {
-                phone: phone, 
-                countryCode: geocode,
-                created: Common.getUTCNow(),
-                modified: Common.getUTCNow(),
-                active: false,
-                otp: Common.generateOTP()                
+        } else {
+            let user = {};            
+            if (user) {
+                user = {                    
+                    modified: Common.getUTCNow(),
+                    active: false,
+                    otp: Common.generateOTP()                
+                }   
+            } else {
+                user = {
+                    phone: phone, 
+                    countryCode: geocode,
+                    created: Common.getUTCNow(),
+                    modified: Common.getUTCNow(),
+                    active: false,
+                    otp: Common.generateOTP()                
+                }      
             }
             User.create(user, function(err, userData){
                 if (err) {
@@ -38,11 +47,8 @@ exports.greet = function(req, res, next) {
                     // write code to send OTP to user
                     return next();
                 }
-            });                        
-        } else {
-            // write code to send OTP to user
-            return res.status(REQUEST.HTTP.ECODE.OK).send();
-        }
+            });                              
+        }         
     });    
 }
 
@@ -63,11 +69,12 @@ exports.login = function(req, res, next) {
             console.error(err);           
         } else if(user) {
             let update = {
+                status: true,
                 active: true, 
                 apiToken: Common.secureRandomToken(),
                 modified: Common.getUTCNow()
             }
-            User.updateByPhone(phone, update, function(err){
+            User.updateByPhone(phone, update, function(err) {
                 if (err) {
                     console.error(err);
                 } else {
@@ -76,8 +83,8 @@ exports.login = function(req, res, next) {
             });                        
         } else {
             return res.status(REQUEST.HTTP.ECODE.OK).send({
-                message: "OTP Entered is Invalid!"
-            })
+                status: false
+            });
         }
     });
 
