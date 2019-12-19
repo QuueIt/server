@@ -27,7 +27,7 @@ exports.connect = function (callback) {
 
 exports.init = function (callback) {
     console.log("Initializing Schemas with MongoDB.");
-
+    mongoose.set('useFindAndModify', false);
     fs.readdirSync(models_path).forEach(function (file) {
         require(models_path + '/' + file);
     });

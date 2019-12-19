@@ -64,8 +64,18 @@ userSchema.statics.validateOTP = function (phone, code, callback) {
     }, callback);
 };
 
+userSchema.statics.findByAuthKey = function (code, callback) {
+    this.findOne({        
+        'apiToken': code
+    }, callback);
+};
+
 userSchema.statics.updateByPhone = function(phone, obj, callback) {
     this.update({phone: phone}, obj, callback);
+}
+
+userSchema.statics.updateByUserId = function(id, obj, callback) {
+    this.findOneAndUpdate({_id: id}, obj, {new: true}, callback);
 }
 
 userSchema.methods.toJSON = function () {

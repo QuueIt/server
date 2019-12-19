@@ -9,6 +9,7 @@ var app = express();
 var debug = require('debug')('quueit:server');
 var http = require('http');
 var morgan = require('morgan');
+const busboy = require('connect-busboy');
 var bodyParser = require('body-parser')
 var redisServer = require('./redis');
 var db = require("./db.js");
@@ -19,6 +20,10 @@ var db = require("./db.js");
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
+app.use(busboy({
+    highWaterMark: 10240 * 1024 * 1024, // 1GB Buffer size
+}))
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
