@@ -74,3 +74,9 @@ exports.upload = function(req, res) {
         file.pipe(upload);
     });
 }
+
+exports.get = function(req, res) {
+    let user = req.user;
+    user.apiToken = undefined;    
+    return res.status(REQUEST.HTTP.ECODE.OK).send(user);
+}

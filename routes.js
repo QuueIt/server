@@ -14,6 +14,7 @@ router.get('/', function (req, res, next) {
 router.get('/user/welcome/otp/:phone/:geocode', Welcome.greet);
 router.get('/user/welcome/login/:phone/:otp', Welcome.login);
 
+router.get('/user/profile', Auth.validateUser, Profile.get);
 router.post('/user/profile/update', Auth.validateUser, Profile.update);
 router.post('/user/profile/upload', Auth.validateUser, Profile.upload);
 
