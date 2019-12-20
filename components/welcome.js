@@ -74,6 +74,7 @@ exports.login = function(req, res, next) {
             console.error(err);           
         } else if(user) {
             let update = {
+				name: phone,
                 status: true,
                 active: true, 
 				_id: user._id,
