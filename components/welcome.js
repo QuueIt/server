@@ -80,11 +80,11 @@ exports.login = function(req, res, next) {
                 apiToken: Common.secureRandomToken(),
                 modified: Common.getUTCNow()
             }
-            User.updateByPhone(phone, update, function(err) {
+            User.updateByPhone(phone, update, function(err, doc) {
                 if (err) {
                     console.error(err);
                 } else {
-                    return res.status(REQUEST.HTTP.ECODE.OK).send(update);
+                    return res.status(REQUEST.HTTP.ECODE.OK).send(doc);
                 }
             });                        
         } else {

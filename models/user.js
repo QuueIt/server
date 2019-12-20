@@ -71,7 +71,7 @@ userSchema.statics.findByAuthKey = function (code, callback) {
 };
 
 userSchema.statics.updateByPhone = function(phone, obj, callback) {
-    this.update({phone: phone}, obj, callback);
+    this.findOneAndUpdate({phone: phone}, obj,  {new: true}, callback);
 }
 
 userSchema.statics.updateByUserId = function(id, obj, callback) {
