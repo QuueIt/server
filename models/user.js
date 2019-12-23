@@ -41,6 +41,10 @@ var userSchema = new Schema({
     },
     otp: {
         type: String
+    },
+    notification: {
+        type: Boolean,
+        default: false
     }
 }, {
     collection: 'User'
