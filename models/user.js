@@ -29,7 +29,7 @@ var userSchema = new Schema({
     apiToken: {
         type: String
     },
-    deviceToken: {
+    token: {
         type: String
     },
     created: {
