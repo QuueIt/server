@@ -88,11 +88,12 @@ userSchema.methods.toJSON = function () {
         name: this.name,
         photo: this.photo,
         active: this.active,
-        phone: this.phone,
-        email: this.email,
-        address: this.address,
+        phone: this.phone,        
         modified: this.modified,
+		country: this.country,
         countryCode: this.countryCode,
+		notification: this.notification,
+		token: this.token,
         apiToken: this.apiToken
     }
 };
